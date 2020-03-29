@@ -1,0 +1,23 @@
+conn / as sysdba
+set termout off feedback off verify off heading off echo off
+
+spool /home/oracle/status.txt APPEND
+
+select 'Status em ' || to_char(sysdate,'dd/mm/yyyy hh24:mi')||' : '||nvl((select 'Backup OK' from v$rman_status where object_type like 'DB%' and rownum=1 and end_time>=trunc(sysdate) and operation='BACKUP' and status='COMPLETED' and not exists(select 1 from v$rman_Status where status not in ('COMPLETED','RUNNING') and start_time>=sysdate-1) ),'PROBLEMAS NO BACKUP!!!')
+  from dual;
+
+select * from (
+select 'ALERTA ESPACO: '||tablespace_name, trunc(sum(bytes)/1048576) MB, trunc(sum(maxbytes)/1048576) max_mb, trunc((sum(maxbytes)/1048576)-(sum(bytes)/1048576)) livre from dba_data_files t
+where autoextensible='YES'
+group by tablespace_name
+)
+where (livre/max_mb*100) < 5;
+
+select 'Instancia ativa ha '|| trunc((sysdate-startup_time))||' dias' from v$instance;
+
+selecT 'Instancia '||a.inst_id||' Limite de Sessoes: '||round((sessions_highwater+30)/value*100)||'%' from gv$license a, gv$parameter b where name='processes' and a.inst_id=b.inst_id ;
+
+Select 'ERRO: ', r.* from v$recover_file r;
+select 'DB Size: '||round(sum(bytes)/1048576/1024)||'GB' from dba_segments;
+spool off
+exit
