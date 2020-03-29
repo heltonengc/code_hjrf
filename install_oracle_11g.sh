@@ -146,7 +146,4 @@ clear
 echo "Reinicie o Servidor. Após Isso, cheque a conexao com o banco de dados, usando o PL SQL!"
 sleep 3s
 clear
-echo "Instalacao FINALIZADA. Realize o IMPDP dos arquivos .dmp do banco de dados, se necessário.
-    Cheque o arquivo [Script_NOVO_Banco.sql],para informacoes do comando IMPDP"
-sleep 5s
-clear
+rm -rf /opt/oracle/atualizacao/*
