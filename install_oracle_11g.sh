@@ -93,52 +93,11 @@ sleep 3s
 echo "CREATE BIGFILE TABLESPACE DM DATAFILE '/opt/oracle/oradata/orcl/DM01.dbf' SIZE $tablespace G REUSE LOGGING EXTENT MANAGEMENT LOCAL SEGMENT SPACE MANAGEMENT AUTO DEFAULT NOCOMPRESS;" | sqlplus sys/$PASS_SYS as sysdba
 
 
-echo "Digite o nome do DONO DO SCHEMA"
-read OWNER
-
-sed -i 's/VELIT/"$OWNER"/g'  /opt/oracle/atualizacao/Script_NOVO_Banco.sql
-
 echo "@/opt/oracle/atualizacao/Script_NOVO_Banco.sql;" | sqlplus sys/$PASS_SYS as sysdba
 echo $PASS_ROOT | sudo -S sed -i -- 's/db:N/db:Y/' /etc/oratab
 echo $PASS_ROOT | sudo -S sed -i -- 's/ORACLE_DB="no"/ORACLE_DB="yes"/' /etc/sysconfig/oracle
 echo $PASS_ROOT | sudo -S sed -i -- 's/LISTENER="no"/LISTENER="yes"/' /etc/sysconfig/oracle
 clear
-
-#CHECK DMP TO IMPORT
-# cd /opt/oracle/atualizacao
-# file=(`find ./ -maxdepth 1 -name "*.dmp"`)
-
-# if [ ${#file[@]} -gt 0 ]; then
-    
-#     echo "Existem arquivos .DMP dentro da pasta atualizacao.. "
-#     sleep 3s
-#     ls -lh
-
-#     echo "DIGITE O NOME DO SCHEMA PRINCIPAL >> VELIT OU DM?: "
-#     read SCHEMA
-
-#     echo "Digite o nome do arquivo .DMP pertencente ao schema DIC. Ex: banco_dic [NAO COLOCAR EXTENSAO]: "
-#     read DIC
-    
-#     echo "Digite o nome do arquivo .DMP pertencente ao schema VELIT OU DM. Ex: banco_velit [NAO COLOCAR EXTENSAO]: "
-#     read DV_S
-
-#     echo -s -p "Digite a senha do banco de dados para o SCHEMA DIC informado: "
-#     read SENHA_DIC
-#     clear
-    
-#     echo -s -p "Digite a senha do banco de dados para o SCHEMA [$SCHEMA] informado: "
-#     read SENHA
-#     clear
-    
-#     impdp dic/$SENHA_DIC dumpfile=$DIC.dmp directory=DIR_SISTOT remap_schema=DIC:DIC
-#     impdp $SCHEMA/$SENHA dumpfile=$DV_S.dmp directory=DIR_SISTOT remap_schema=$SCHEMA:$SCHEMA
-#     echo "@/opt/oracle/product/11gR1/db/rdbms/admin/utlrp.sql" | sqlplus sys/$PASS_SYS as sysdba
-#     quit
-
-# fi
-
-rm -rf database
 
 echo "Concluído!"
 sleep 2s
